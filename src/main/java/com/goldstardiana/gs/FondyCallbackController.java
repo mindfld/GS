@@ -4,12 +4,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 
 @RestController
 public class FondyCallbackController {
     @RequestMapping("/zaza")
-    public String index(HttpServletRequest request) {
+    public String index(HttpServletRequest request, HttpServletResponse response) {
         StringBuilder sb = new StringBuilder();
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -32,8 +33,12 @@ public class FondyCallbackController {
         sb.append(request.getParameterMap());
         sb.append("\n").append("\n");
 
-        System.out.println("------------------MESSSAGA!!!!--------------");
-        System.out.println(sb.toString());
+        System.out.println("------------------REQUESTAAA!!!!--------------");
+        System.out.println(request.toString());
+        System.out.println("------------------END OF MESSSAGA!!!!--------------");
+
+        System.out.println("------------------RESPONSAAA!!!!--------------");
+        System.out.println(response.toString());
         System.out.println("------------------END OF MESSSAGA!!!!--------------");
         return sb.toString();
     }
