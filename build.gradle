@@ -18,6 +18,9 @@ apply plugin: 'org.springframework.boot'
 jar {
     baseName = 'gs'
     version =  '0.1'
+    manifest {
+        attributes 'Main-Class': 'com.goldstardiana.gs.FondyCallbackController'
+    }
 }
 
 repositories {
