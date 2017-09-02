@@ -15,17 +15,24 @@ public class FondyCallbackController {
         while (headerNames.hasMoreElements()) {
             sb.append(headerNames.nextElement()).append("\n");
         }
+        sb.append("\n").append("\n");
 
         Enumeration<String> attributeNames = request.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
             sb.append(attributeNames.nextElement()).append("\n");
         }
+        sb.append("\n").append("\n");
 
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             sb.append(paramNames.nextElement()).append("\n");
         }
+        sb.append("\n").append("\n");
+
         sb.append(request.getParameterMap());
+        sb.append("\n").append("\n");
+
+        System.out.println(sb.toString());
         return sb.toString();
     }
 }
