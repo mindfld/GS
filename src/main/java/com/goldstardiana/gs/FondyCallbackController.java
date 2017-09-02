@@ -32,7 +32,9 @@ public class FondyCallbackController {
         sb.append(request.getParameterMap());
         sb.append("\n").append("\n");
 
+        System.out.println("------------------MESSSAGA!!!!--------------");
         System.out.println(sb.toString());
+        System.out.println("------------------END OF MESSSAGA!!!!--------------");
         return sb.toString();
     }
 }
