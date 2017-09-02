@@ -34,12 +34,9 @@ public class FondyCallbackController {
         sb.append("\n").append("\n");
 
         System.out.println("------------------REQUESTAAA!!!!--------------");
-        System.out.println(request.toString());
+        System.out.println(sb.toString());
         System.out.println("------------------END OF MESSSAGA!!!!--------------");
 
-        System.out.println("------------------RESPONSAAA!!!!--------------");
-        System.out.println(response.toString());
-        System.out.println("------------------END OF MESSSAGA!!!!--------------");
         return sb.toString();
     }
 }
