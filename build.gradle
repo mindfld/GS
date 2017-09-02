@@ -17,7 +17,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'gs'
-    version =  '0.1'
+    version = '0.1'
     manifest {
         attributes 'Main-Class': 'com.goldstardiana.gs.FondyCallbackController'
     }
@@ -26,19 +26,22 @@ jar {
 repositories {
     mavenCentral()
 }
+compileJava.dependsOn(processResources)
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    // tag::jetty[]
+    compile("javax.mail:mail:1.4")
+    compile("org.jsoup:jsoup:1.10.3")
+    compile("com.google.guava:guava:23.0")
+
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
     compile("org.springframework.boot:spring-boot-starter-jetty")
-    // end::jetty[]
-    // tag::actuator[]
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    // end::actuator[]
     testCompile("junit:junit")
+
+    optional "org.springframework.boot:spring-boot-configuration-processor"
 }
