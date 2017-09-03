@@ -14,7 +14,7 @@ import java.util.List;
 public class EmailCheckTask {
 
     private static final Logger log = LoggerFactory.getLogger(EmailCheckTask.class);
-    private static final int CHECK_INTERVAL_SEC = 5 * 1000;
+    private static final int CHECK_INTERVAL_SEC = 60 * 1000;
 
     @Autowired
     private EmailService emailService = new EmailService();
@@ -23,8 +23,7 @@ public class EmailCheckTask {
     public void reportCurrentTime() {
         List<EmailData> emails = emailService.getUnreadEmails();
         for (EmailData data :emails){
-           // emailService.sendEmail(generateEmail(EmailData));
+           emailService.sendEmail(data);
         }
-       // emailService.cleanEmails();
     }
 }
