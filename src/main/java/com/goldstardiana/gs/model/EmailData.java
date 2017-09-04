@@ -12,13 +12,6 @@ public class EmailData {
     public EmailData() {
     }
 
-    public EmailData(String clientEmailAddress, String selectedProduct, String orderId, String price) {
-        this.clientEmailAddress = clientEmailAddress;
-        this.selectedProduct = selectedProduct;
-        this.orderId = orderId;
-        this.price = price;
-    }
-
     public String getClientEmailAddress() {
         return clientEmailAddress;
     }

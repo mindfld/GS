@@ -13,6 +13,10 @@ public class EmailConfig {
     private String mailStoreType;
     private String login;
     private String password;
+    private String smtpPort;
+    private String senderEmail;
+    private String emailSubject;
+    private String emailText;
 
     public String getHost() {
         return host;
@@ -44,5 +48,37 @@ public class EmailConfig {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSmtpPort() {
+        return smtpPort;
+    }
+
+    public void setSmtpPort(String smtpPort) {
+        this.smtpPort = smtpPort;
+    }
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getEmailSubject() {
+        return emailSubject;
+    }
+
+    public void setEmailSubject(String emailSubject) {
+        this.emailSubject = emailSubject;
+    }
+
+    public String getEmailText() {
+        return emailText;
+    }
+
+    public void setEmailText(String emailText) {
+        this.emailText = emailText;
     }
 }

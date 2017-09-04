@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Service
 public class URLProvider {
-    private Map<String,String> urls;
+    private Map<String,String> urls = new HashMap<>();
 
     public URLProvider() {
         this.urls = new HashMap<>();

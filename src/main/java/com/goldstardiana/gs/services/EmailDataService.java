@@ -1,7 +1,6 @@
 package com.goldstardiana.gs.services;
 
 import com.goldstardiana.gs.model.EmailData;
-import com.sun.mail.pop3.POP3Store;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 
@@ -15,38 +14,20 @@ import java.util.Properties;
 @Service
 public class EmailDataService {
 
-    public List<EmailData> receiveEmail(String host, String storeType, String user, String password) {
+    public List<EmailData> receiveEmail(String host, String user, String password) {
         List<EmailData> emailsBodyList = new LinkedList<>();
 
         try {
 
-            Properties props = new Properties();
-            props.setProperty("mail.store.protocol", "imaps");
-            Session session = Session.getDefaultInstance(props, null);
-            Store store = session.getStore("imaps");
+            Store store = configureEmailStore(host, user, password);
             store.connect(host, user, password);
 
             Folder emailFolder = store.getFolder("INBOX");
+            Folder copyFolder = store.getFolder("INBOX.Processed");
             emailFolder.open(Folder.READ_WRITE);
 
-            //4) retrieve the messages from the folder in an array and print it
-            Message[] messages = emailFolder.getMessages();
-            for (int i = 0; i < messages.length; i++) {
-                Message message = messages[i];
-                if (message.getSubject().contains("Success transaction")) {
-                    MimeMultipart content = (MimeMultipart) message.getContent();
-                    emailsBodyList.add(parseEmail(getTextFromMimeMultipart(content)));
+            emailsBodyList = parseMessages(emailFolder, copyFolder);
 
-                }
-            }
-            Folder copyFolder = store.getFolder("INBOX.Processed");
-            emailFolder.copyMessages(messages, copyFolder);
-
-            for (Message message : messages) {
-                message.setFlag(Flags.Flag.DELETED, true);
-            }
-
-            //5) close the store and folder objects
             emailFolder.close(true);
             store.close();
 
@@ -57,21 +38,40 @@ public class EmailDataService {
         return emailsBodyList;
     }
 
+    private List<EmailData> parseMessages(Folder emailFolder, Folder copyFolder) throws MessagingException, IOException {
+        List<EmailData> emailList = new LinkedList<>();
+        Message[] messages = emailFolder.getMessages();
+        for (Message message : messages) {
+            if (message.getSubject().contains("Success transaction")) {
+                MimeMultipart content = (MimeMultipart) message.getContent();
+                emailList.add(parseEmail(getTextFromMimeMultipart(content)));
+
+            }
+        }
+
+        emailFolder.copyMessages(messages, copyFolder);
+
+        for (Message message : messages) {
+            message.setFlag(Flags.Flag.DELETED, true);
+        }
+        return emailList;
+    }
+
     private EmailData parseEmail(String emailContent) {
         EmailData data = new EmailData();
         String[] lines = emailContent.split("\r\n");
         for (String line : lines) {
             if (line.contains("Email клиента:")) {
-                data.setClientEmailAddress(line.substring(line.indexOf(":") + 1).trim());
+                data.setClientEmailAddress(line.substring(line.indexOf("Email клиента:") + 15, line.indexOf("Описание:")).trim());
             }
             if (line.contains("Описание:")) {
-                data.setSelectedProduct(line.substring(line.indexOf(":") + 1).trim());
+                data.setSelectedProduct(line.substring(line.indexOf("Описание:") + 10, line.indexOf("Номер карты/счета:")).trim());
             }
             if (line.contains("Номер заказа на сайте:")) {
-                data.setOrderId(line.substring(line.indexOf(":") + 1).trim());
+                data.setOrderId(line.substring(line.indexOf("Номер заказа на сайте:") + 22, line.indexOf("Email клиента:")).trim());
             }
             if (line.contains("Сумма платежа:")) {
-                data.setPrice(line.substring(line.indexOf(":") + 1).trim());
+                data.setPrice(line.substring(line.indexOf("Сумма платежа:") + 15, line.indexOf("Дата платежа:")).trim());
             }
         }
         return data;
@@ -87,12 +87,18 @@ public class EmailDataService {
                 result = result + "\n" + bodyPart.getContent();
             } else if (bodyPart.isMimeType("text/html")) {
                 String html = (String) bodyPart.getContent();
-                result = result + "\n" +
-                .text();
+                result = result + "\n" + Jsoup.parse(html).text();
             } else if (bodyPart.getContent() instanceof MimeMultipart) {
                 result = result + bodyPart.getContent();
             }
         }
         return result;
+    }
+
+    private Store configureEmailStore(String host, String user, String password) throws NoSuchProviderException {
+        Properties props = new Properties();
+        props.setProperty("mail.store.protocol", "imaps");
+        Session session = Session.getDefaultInstance(props, null);
+        return session.getStore("imaps");
     }
 }
