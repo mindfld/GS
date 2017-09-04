@@ -16,7 +16,7 @@ public class EmailConfig {
     private String smtpPort;
     private String senderEmail;
     private String emailSubject;
-    private String emailText;
+    private String emailText ="THIS IS URLAAAA!!!! <a href=%url%>Скачать</a>";
 
     public String getHost() {
         return host;

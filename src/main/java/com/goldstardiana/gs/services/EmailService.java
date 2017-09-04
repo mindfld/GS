@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,13 +33,19 @@ public class EmailService {
 
 
         try {
+            MimeMessage message = new MimeMessage(configureEmailSession());
 
-            Message message = new MimeMessage(configureEmailSession());
             message.setFrom(new InternetAddress(emailConfig.getSenderEmail()));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(data.getClientEmailAddress()));
             message.setSubject(emailConfig.getEmailSubject());
-            message.setText(emailConfig.getEmailText().replace("%url%", url));
+            Multipart multipart = new MimeMultipart("alternative");
+
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(emailConfig.getEmailText().replace("%url%", url), "text/html; charset=utf-8");
+
+            multipart.addBodyPart(htmlPart);
+            message.setContent(multipart);
 
             Transport.send(message);
 
